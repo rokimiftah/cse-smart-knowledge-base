@@ -7,7 +7,7 @@ import { pluginReact } from "@rsbuild/plugin-react";
 export default defineConfig({
   html: {
     meta: {
-      description:"CSE Smart Knowledge Base"
+      description: "CSE Smart Knowledge Base",
     },
     favicon: "",
     title: "SerpApi - CSE Smart Knowledge Base",

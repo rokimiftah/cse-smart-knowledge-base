@@ -1,7 +1,7 @@
 import { AnimatePresence } from "motion/react";
 import { Route, Switch } from "wouter";
 
-import { LandingPage } from "@pages/landing";
+import { SearchPage } from "@pages/search";
 import { PageTransition } from "@shared/components";
 
 import "./styles/global.css";
@@ -16,7 +16,7 @@ export const App = () => {
     >
       <PageTransition>
         <Switch>
-          <Route path="/" component={LandingPage} />
+          <Route path="/" component={SearchPage} />
         </Switch>
       </PageTransition>
     </AnimatePresence>
