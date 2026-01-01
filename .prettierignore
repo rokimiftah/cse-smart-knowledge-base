@@ -1,0 +1,8 @@
+# Convex
+convex/_generated/
+
+# Build
+dist/
+
+# Lock file
+bun.lock

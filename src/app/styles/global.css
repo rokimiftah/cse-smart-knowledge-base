@@ -1,0 +1,43 @@
+@import "tailwindcss";
+@import "./fonts.css";
+
+@theme {
+  --font-poppins: "Poppins", sans-serif;
+
+  --color-bg-cream: #fefbea;
+  --color-primary-green: #00a884;
+  --color-primary-blue: #3d7fff;
+  --color-primary-orange: #f5a623;
+  --color-warning-yellow: #fad02c;
+  --color-accent-pink: #ff6b6b;
+  --color-text-dark: #333333;
+  --color-text-muted: #666666;
+  --color-white: #ffffff;
+
+  --radius-button: 50px;
+  --radius-card: 16px;
+  --radius-box: 12px;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-poppins);
+  color: var(--color-text-dark);
+  background-color: #f3f4f6;
+}
+
+/* Hide scrollbar for all browsers */
+*,
+*::before,
+*::after {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+*::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Motion animation initial state - prevents flash before JS hydration */
+.motion-hidden {
+  opacity: 0;
+}

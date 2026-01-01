@@ -1,0 +1,44 @@
+{
+  "name": "cse-smart-knowledge-base",
+  "type": "module",
+  "scripts": {
+    "build": "rsbuild build",
+    "convex:deploy": "convex deploy",
+    "convex:dev": "convex dev",
+    "dev": "rsbuild dev",
+    "format": "prettier --write .",
+    "format:lint:typecheck": "bun run format && bun run lint:typecheck",
+    "lint": "biome check --write --unsafe .",
+    "lint:typecheck": "bun run lint && bun run typecheck",
+    "preview": "rsbuild preview",
+    "typecheck": "tsc --noEmit && cd convex && tsc --noEmit"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "convex": "^1.31.2",
+    "lucide-react": "^0.562.0",
+    "motion": "^12.23.26",
+    "openai": "^6.15.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "wouter": "^3.9.0",
+    "zod": "^4.2.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.10",
+    "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
+    "@rsbuild/core": "^1.6.15",
+    "@rsbuild/plugin-react": "^1.4.2",
+    "@tailwindcss/postcss": "^4.1.18",
+    "@types/node": "^25.0.3",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "prettier": "^3.7.4",
+    "prettier-plugin-tailwindcss": "^0.7.2",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^5.9.3"
+  },
+  "trustedDependencies": [
+    "core-js"
+  ]
+}
