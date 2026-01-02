@@ -2,32 +2,32 @@ import { query } from "../_generated/server";
 
 export const getDashboardStats = query({
   handler: async (ctx) => {
-    const allIssues = await ctx.db.query("issues").collect();
+    const result = await ctx.db.query("issues").paginate({ cursor: null, numItems: 690 });
 
-    const categoryCount = allIssues.reduce(
-      (acc, issue) => {
-        acc[issue.category] = (acc[issue.category] || 0) + 1;
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
+    const categoryCount: Record<string, number> = {};
+    const confidenceCount: Record<string, number> = {};
+    let lastSync: number | null = null;
 
-    const confidenceCount = allIssues.reduce(
-      (acc, issue) => {
-        acc[issue.confidenceScore] = (acc[issue.confidenceScore] || 0) + 1;
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
+    for (const issue of result.page) {
+      categoryCount[issue.category] = (categoryCount[issue.category] || 0) + 1;
+      confidenceCount[issue.confidenceScore] = (confidenceCount[issue.confidenceScore] || 0) + 1;
+      if (lastSync === null || issue._creationTime > lastSync) {
+        lastSync = issue._creationTime;
+      }
+    }
 
-    const recentIssues = allIssues.sort((a, b) => b._creationTime - a._creationTime).slice(0, 10);
+    const recentIssues = result.page
+      .sort((a, b) => b._creationTime - a._creationTime)
+      .slice(0, 10)
+      .map(({ embedding: _, ...rest }) => rest);
 
     return {
-      total: allIssues.length,
+      total: result.page.length,
       byCategory: categoryCount,
       byConfidence: confidenceCount,
       recentIssues,
-      lastSync: allIssues.length > 0 ? Math.max(...allIssues.map((i) => i._creationTime)) : null,
+      lastSync,
+      hasMore: !result.isDone,
     };
   },
 });
