@@ -59,8 +59,9 @@ export const getEmbedding = async (text: string, inputType: "query" | "passage" 
     throw new Error("EMBEDDING_API_KEY or LLM_API_KEY is not configured");
   }
 
-  // Truncate text to stay under Nvidia's 8192 token limit (~4 chars per token)
-  const MAX_CHARS = 30000;
+  // Truncate text to stay under Nvidia's 8192 token limit
+  // Using ~3 chars per token to be safe (some chars = multiple tokens)
+  const MAX_CHARS = 24000;
   const truncatedText = text.length > MAX_CHARS ? text.substring(0, MAX_CHARS) + "..." : text;
 
   console.log("Embedding API Request:", {
