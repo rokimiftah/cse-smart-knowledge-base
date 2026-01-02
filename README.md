@@ -70,7 +70,7 @@ AI-powered knowledge base for Customer Success Engineers (CSE) that converts Git
 
    App will be available at `http://localhost:3000`
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 cse-smart-knowledge-base/
