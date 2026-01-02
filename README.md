@@ -2,21 +2,21 @@
 
 AI-powered knowledge base for Customer Success Engineers (CSE) that converts GitHub Issues into searchable solutions with semantic search.
 
-## 🚀 Features
+## Features
 
 - **AI-Powered Analysis**: Automatically analyzes GitHub issues using OpenAI to extract summary, root cause, and solution
 - **Semantic Search**: Vector-based search to find relevant solutions based on context, not just keyword matching
 - **Auto Sync**: Automated daily cron job to synchronize latest closed issues
 - **Modern UI**: React 19 with Tailwind CSS for responsive and intuitive UX
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend**: React 19, Rsbuild, Tailwind CSS, Motion (animations), Wouter (routing)
 - **Backend**: Convex (BaaS), OpenAI API
 - **Language**: TypeScript (strict mode)
 - **Tooling**: Bun, Biome (linting/formatting)
 
-## 📦 Setup
+## Setup
 
 ### Prerequisites
 
@@ -104,7 +104,7 @@ cse-smart-knowledge-base/
     └── MASTERPLAN.md           # BRD & PRD
 ```
 
-## 🔧 Available Scripts
+## Available Scripts
 
 ```bash
 bun run dev              # Start dev server
@@ -117,7 +117,7 @@ bun run lint             # Run Biome linter
 bun run lint:typecheck   # Run both lint & typecheck
 ```
 
-## 🎯 How It Works
+## How It Works
 
 ### Data Flow
 
@@ -136,7 +136,7 @@ Runs daily at 02:00 UTC:
 - Analyzes new issues with AI
 - Saves to database
 
-## 🔍 Search Usage
+## Search Usage
 
 1. Navigate to `/search` page
 2. Enter natural language query (e.g., "timeout error when scraping")
@@ -145,7 +145,7 @@ Runs daily at 02:00 UTC:
 5. Displays results sorted by relevance
 6. Click card to see full analysis
 
-## 📊 Database Schema
+## Database Schema
 
 ```typescript
 issues: {
@@ -167,7 +167,7 @@ issues: {
 }
 ```
 
-## 🚨 Troubleshooting
+## Troubleshooting
 
 ### Typecheck Issues
 
@@ -188,10 +188,10 @@ bun convex dev --once
 - Verify OpenAI API key is set
 - Check browser console for errors
 
-## 📝 License
+## License
 
 MIT
 
-## 👥 Author
+## Author
 
 Roki Miftah Kamaludin - Customer Success Engineer
