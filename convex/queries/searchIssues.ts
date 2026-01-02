@@ -173,7 +173,7 @@ export const searchIssues = action({
     query: v.string(),
     limit: v.optional(v.number()),
   },
-  handler: async (ctx, args): Promise<Doc<"issues">[]> => {
+  handler: async (ctx, args) => {
     const { query, limit = 10 } = args;
 
     const queryEmbedding = await getEmbedding(query, "query");
@@ -231,7 +231,11 @@ export const searchIssues = action({
       })
       .sort((a, b) => b.combinedScore - a.combinedScore)
       .slice(0, limit)
-      .map(({ issue }) => issue);
+      .map(({ issue }) => {
+        // Exclude embedding from results to reduce bandwidth
+        const { embedding, ...rest } = issue;
+        return rest;
+      });
 
     return sortedIssues;
   },

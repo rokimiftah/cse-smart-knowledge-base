@@ -7,10 +7,12 @@ export const SyncButton = () => {
   const syncStatus = useQuery((api as any)["queries/getSyncStatus"].getSyncStatus);
   const triggerSyncAction = useAction((api as any)["actions/manualSync"].triggerSync);
 
+  const isLoading = syncStatus === undefined;
   const isSyncing = syncStatus?.isRunning === true;
+  const isDisabled = isLoading || isSyncing;
 
   const handleSync = async () => {
-    if (isSyncing) return;
+    if (isDisabled) return;
 
     try {
       await triggerSyncAction({ perPage: 100 });
@@ -20,6 +22,7 @@ export const SyncButton = () => {
   };
 
   const getStatusIcon = () => {
+    if (isLoading) return <Loader2 className="animate-spin" size={16} />;
     if (isSyncing) return <Loader2 className="animate-spin" size={16} />;
     if (syncStatus?.errors && syncStatus.errors > 0) return <AlertCircle size={16} />;
     if (syncStatus?.completedAt) return <CheckCircle size={16} />;
@@ -27,6 +30,7 @@ export const SyncButton = () => {
   };
 
   const getButtonText = () => {
+    if (isLoading) return "";
     if (isSyncing) {
       if (syncStatus?.total && syncStatus.total > 0) {
         return `Syncing ${syncStatus.processed ?? 0}/${syncStatus.total}...`;
@@ -41,8 +45,8 @@ export const SyncButton = () => {
       <button
         type="button"
         onClick={handleSync}
-        disabled={isSyncing}
-        style={{ cursor: isSyncing ? "not-allowed" : "pointer", opacity: isSyncing ? 0.5 : 1 }}
+        disabled={isDisabled}
+        style={{ cursor: isDisabled ? "not-allowed" : "pointer", opacity: isDisabled ? 0.5 : 1 }}
         className="inline-flex items-center gap-1.5 rounded-xl border-2 border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-900 transition-colors hover:border-gray-400 sm:gap-2 sm:rounded-2xl sm:px-5 sm:py-3 sm:text-base"
       >
         {getStatusIcon()}

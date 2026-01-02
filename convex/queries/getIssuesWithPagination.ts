@@ -12,23 +12,28 @@ export const getIssuesWithPagination = query({
   handler: async (ctx, args) => {
     const { category, confidenceScore, limit = 20, offset = 0 } = args;
 
-    let issues = await ctx.db.query("issues").collect();
+    const allIssues = await ctx.db.query("issues").collect();
+
+    let filtered = allIssues;
 
     if (category && category !== "all") {
-      issues = issues.filter((issue) => issue.category === category);
+      filtered = filtered.filter((issue) => issue.category === category);
     }
 
     if (confidenceScore && confidenceScore !== "all") {
-      issues = issues.filter((issue) => issue.confidenceScore === confidenceScore);
+      filtered = filtered.filter((issue) => issue.confidenceScore === confidenceScore);
     }
 
-    issues.sort((a, b) => b._creationTime - a._creationTime);
+    filtered.sort((a, b) => b._creationTime - a._creationTime);
 
-    const total = issues.length;
-    const paginatedIssues = issues.slice(offset, offset + limit);
+    const total = filtered.length;
+    const paginatedIssues = filtered.slice(offset, offset + limit);
+
+    // Exclude embedding to reduce bandwidth
+    const issuesWithoutEmbedding = paginatedIssues.map(({ embedding, ...rest }) => rest);
 
     return {
-      issues: paginatedIssues,
+      issues: issuesWithoutEmbedding,
       total,
       hasMore: offset + limit < total,
     };

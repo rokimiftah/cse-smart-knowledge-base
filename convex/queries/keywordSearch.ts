@@ -65,6 +65,7 @@ export const keywordSearch = query({
       })),
     });
 
-    return relevant.slice(0, limit);
+    // Exclude embedding from results to reduce bandwidth
+    return relevant.slice(0, limit).map(({ embedding, ...rest }) => rest);
   },
 });
