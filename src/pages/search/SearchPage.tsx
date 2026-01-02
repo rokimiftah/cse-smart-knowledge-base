@@ -20,7 +20,7 @@ export const SearchPage = () => {
   const hasResults = results.length > 0 || isLoading || error;
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
+    <div className="flex min-h-dvh flex-col bg-gray-50">
       {/* Header Section */}
       <div className={`z-40 w-full ${hasResults ? "" : "flex flex-1 items-center justify-center"}`}>
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
