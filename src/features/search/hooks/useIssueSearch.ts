@@ -21,6 +21,7 @@ export const useIssueSearch = () => {
 
     setIsLoading(true);
     setError(null);
+    setResults([]); // Clear previous results immediately
 
     try {
       const searchResults = await searchAction({ query, limit: 10 });
@@ -33,10 +34,16 @@ export const useIssueSearch = () => {
     }
   };
 
+  const clearResults = () => {
+    setResults([]);
+    setError(null);
+  };
+
   return {
     results,
     isLoading,
     error,
     search,
+    clearResults,
   };
 };
