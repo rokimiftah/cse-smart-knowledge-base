@@ -1,13 +1,13 @@
 # CSE Smart Knowledge Base
 
-AI-powered knowledge base untuk Customer Success Engineers (CSE) yang mengonversi GitHub Issues menjadi searchable solutions dengan semantic search.
+AI-powered knowledge base for Customer Success Engineers (CSE) that converts GitHub Issues into searchable solutions with semantic search.
 
 ## 🚀 Features
 
-- **AI-Powered Analysis**: Otomatis menganalisis GitHub issues menggunakan OpenAI untuk ekstrak summary, root cause, dan solution
-- **Semantic Search**: Vector-based search untuk menemukan solusi relevan berdasarkan konteks, bukan hanya keyword matching
-- **Auto Sync**: Cron job otomatis setiap hari untuk sinkronisasi closed issues terbaru
-- **Modern UI**: React 19 dengan Tailwind CSS untuk UX yang responsif dan intuitif
+- **AI-Powered Analysis**: Automatically analyzes GitHub issues using OpenAI to extract summary, root cause, and solution
+- **Semantic Search**: Vector-based search to find relevant solutions based on context, not just keyword matching
+- **Auto Sync**: Automated daily cron job to synchronize latest closed issues
+- **Modern UI**: React 19 with Tailwind CSS for responsive and intuitive UX
 
 ## 🛠️ Tech Stack
 

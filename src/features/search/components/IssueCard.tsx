@@ -27,10 +27,10 @@ export const IssueCard = ({ issue, onClick }: IssueCardProps) => {
   return (
     <div
       onClick={onClick}
-      className="group cursor-pointer rounded-lg border-2 border-gray-200 bg-white p-5 shadow-sm transition-all hover:border-blue-400 hover:shadow-md"
+      className="group cursor-pointer rounded-lg border-2 border-gray-200 bg-white p-4 shadow-sm transition-all hover:border-blue-400 hover:shadow-md sm:p-5"
     >
-      <div className="mb-3 flex items-start justify-between gap-3">
-        <h3 className="flex-1 text-lg font-semibold text-gray-900 group-hover:text-blue-600">{issue.title}</h3>
+      <div className="mb-3 flex items-start justify-between gap-2 sm:gap-3">
+        <h3 className="flex-1 text-base font-semibold text-gray-900 group-hover:text-blue-600 sm:text-lg">{issue.title}</h3>
         <a
           href={issue.url}
           target="_blank"
@@ -38,22 +38,27 @@ export const IssueCard = ({ issue, onClick }: IssueCardProps) => {
           onClick={(e) => e.stopPropagation()}
           className="flex-shrink-0 text-gray-400 transition-colors hover:text-blue-600"
         >
-          <ExternalLink size={18} />
+          <ExternalLink size={16} className="sm:hidden" />
+          <ExternalLink size={18} className="hidden sm:block" />
         </a>
       </div>
 
-      <div className="mb-3 flex flex-wrap gap-2">
-        <span className={`rounded-full border px-3 py-1 text-xs font-medium ${categoryColors[issue.category]}`}>
+      <div className="mb-3 flex flex-wrap gap-1.5 sm:gap-2">
+        <span
+          className={`rounded-full border px-2.5 py-0.5 text-xs font-medium sm:px-3 sm:py-1 ${categoryColors[issue.category]}`}
+        >
           {issue.category}
         </span>
-        <span className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs text-gray-600">#{issue.number}</span>
+        <span className="rounded-full border border-gray-200 bg-gray-50 px-2.5 py-0.5 text-xs text-gray-600 sm:px-3 sm:py-1">
+          #{issue.number}
+        </span>
         <span
           className={`text-xs font-medium ${solutionQualityColors[issue.confidenceScore as keyof typeof solutionQualityColors]}`}
         >
           {issue.confidenceScore} Solution
         </span>
         {similarityPercentage !== null && (
-          <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+          <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 sm:px-3 sm:py-1">
             {similarityPercentage}% match
           </span>
         )}
@@ -61,7 +66,7 @@ export const IssueCard = ({ issue, onClick }: IssueCardProps) => {
 
       <p className="line-clamp-3 text-sm text-gray-600">{issue.summary}</p>
 
-      <div className="mt-3 text-xs text-blue-600 group-hover:underline">Lihat detail solusi →</div>
+      <div className="mt-3 text-xs text-blue-600 group-hover:underline">View solution details →</div>
     </div>
   );
 };
