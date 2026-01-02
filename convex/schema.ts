@@ -2,6 +2,16 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
+  syncStatus: defineTable({
+    isRunning: v.boolean(),
+    startedAt: v.optional(v.number()),
+    completedAt: v.optional(v.number()),
+    processed: v.optional(v.number()),
+    total: v.optional(v.number()),
+    errors: v.optional(v.number()),
+    message: v.optional(v.string()),
+  }),
+
   issues: defineTable({
     githubIssueId: v.number(),
     number: v.number(),

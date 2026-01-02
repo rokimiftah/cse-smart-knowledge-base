@@ -21,6 +21,8 @@ export const syncIssues = action({
   handler: async (ctx, args) => {
     const { owner, repo, perPage = 100, maxPages = 30 } = args;
 
+    await ctx.runMutation((internal as any)["mutations/updateSyncStatus"].startSync, {});
+
     console.log(`[Sync] Starting sync for ${owner}/${repo}`);
 
     const issues: IssueWithComments[] = await ctx.runAction((internal as any)["actions/githubFetcher"].fetchClosedIssues, {
@@ -32,7 +34,15 @@ export const syncIssues = action({
 
     console.log(`[Sync] Fetched ${issues.length} closed issues`);
 
+    await ctx.runMutation((internal as any)["mutations/updateSyncStatus"].updateSyncProgress, {
+      processed: 0,
+      total: issues.length,
+      errors: 0,
+      message: `Fetched ${issues.length} issues, processing...`,
+    });
+
     let processedCount = 0;
+    let skippedCount = 0;
     let errorCount = 0;
 
     for (const issue of issues) {
@@ -42,11 +52,9 @@ export const syncIssues = action({
         });
 
         if (existing) {
-          console.log(`[Sync] Skipping existing issue #${issue.number}`);
+          skippedCount++;
           continue;
         }
-
-        console.log(`[Sync] Analyzing issue #${issue.number}: ${issue.title}`);
 
         const analysis = await ctx.runAction((internal as any)["actions/aiAnalyzer"].analyzeIssue, {
           issue,
@@ -67,7 +75,6 @@ export const syncIssues = action({
         });
 
         processedCount++;
-        console.log(`[Sync] Saved issue #${issue.number}`);
 
         // Rate limit delay for Nvidia embedding API (30 RPM)
         await delay(RATE_LIMIT_DELAY_MS);
@@ -77,7 +84,14 @@ export const syncIssues = action({
       }
     }
 
-    console.log(`[Sync] Completed: ${processedCount} processed, ${errorCount} errors`);
+    console.log(`[Sync] Completed: ${processedCount} processed, ${skippedCount} skipped, ${errorCount} errors`);
+
+    await ctx.runMutation((internal as any)["mutations/updateSyncStatus"].completeSync, {
+      processed: processedCount,
+      total: issues.length,
+      errors: errorCount,
+      message: `Completed: ${processedCount} processed, ${skippedCount} skipped, ${errorCount} errors`,
+    });
 
     return {
       total: issues.length,
