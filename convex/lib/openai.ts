@@ -59,19 +59,25 @@ export const getEmbedding = async (text: string, inputType: "query" | "passage" 
     throw new Error("EMBEDDING_API_KEY or LLM_API_KEY is not configured");
   }
 
+  // Truncate text to stay under Nvidia's 8192 token limit (~4 chars per token)
+  const MAX_CHARS = 30000;
+  const truncatedText = text.length > MAX_CHARS ? text.substring(0, MAX_CHARS) + "..." : text;
+
   console.log("Embedding API Request:", {
     url: `${apiUrl}/embeddings`,
     model,
-    textLength: text.length,
+    textLength: truncatedText.length,
+    originalLength: text.length,
+    truncated: text.length > MAX_CHARS,
     inputType,
     provider: apiUrl.includes("nvidia") ? "Nvidia" : "OpenAI",
-    textPreview: text.substring(0, 100),
+    textPreview: truncatedText.substring(0, 100),
   });
 
   // Prepare request body
   const requestBody: any = {
     model,
-    input: text,
+    input: truncatedText,
     encoding_format: "float",
   };
 
