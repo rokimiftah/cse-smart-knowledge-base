@@ -9,16 +9,14 @@ export const triggerSync = action({
   args: {
     perPage: v.optional(v.number()),
   },
-  handler: async (ctx, args): Promise<{ total: number; processed: number; errors: number }> => {
-    const result: { total: number; processed: number; errors: number } = await ctx.runAction(
-      (internal as any)["actions/syncIssues"].syncIssues,
-      {
-        owner: "serpapi",
-        repo: "public-roadmap",
-        perPage: args.perPage || 10,
-      },
-    );
+  handler: async (ctx, args): Promise<{ started: boolean }> => {
+    // Schedule the sync action to run immediately in the background
+    await ctx.scheduler.runAfter(0, (internal as any)["actions/syncIssues"].syncIssues, {
+      owner: "serpapi",
+      repo: "public-roadmap",
+      perPage: args.perPage || 100,
+    });
 
-    return result;
+    return { started: true };
   },
 });

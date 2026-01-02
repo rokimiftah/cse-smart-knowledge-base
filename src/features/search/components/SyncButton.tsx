@@ -9,8 +9,6 @@ export const SyncButton = () => {
 
   const isSyncing = syncStatus?.isRunning === true;
 
-  console.log("SyncButton debug:", { syncStatus, isSyncing });
-
   const handleSync = async () => {
     if (isSyncing) return;
 
@@ -51,11 +49,15 @@ export const SyncButton = () => {
         <span className="hidden sm:inline">{getButtonText()}</span>
       </button>
 
-      {syncStatus?.message && !isSyncing && syncStatus.completedAt && (
-        <div className="absolute top-full right-0 mt-2 w-56 rounded-lg border-2 border-gray-300 bg-white p-2.5 text-xs shadow-lg sm:w-64 sm:rounded-xl sm:p-3 sm:text-sm">
-          {syncStatus.message}
-        </div>
-      )}
+      {syncStatus?.message &&
+        !isSyncing &&
+        syncStatus.completedAt &&
+        syncStatus.processed !== undefined &&
+        syncStatus.processed > 0 && (
+          <div className="absolute top-full right-0 mt-2 w-56 rounded-lg border-2 border-gray-300 bg-white p-2.5 text-xs shadow-lg sm:w-64 sm:rounded-xl sm:p-3 sm:text-sm">
+            {syncStatus.message}
+          </div>
+        )}
     </div>
   );
 };
