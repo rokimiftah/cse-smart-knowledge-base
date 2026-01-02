@@ -10,7 +10,23 @@ export const keywordSearch = query({
   handler: async (ctx, args) => {
     const { query: searchQuery, limit = 10 } = args;
 
-    const allIssues = await ctx.db.query("issues").collect();
+    // Use pagination to get all issues without hitting memory limit
+    const allIssues: any[] = [];
+    let isDone = false;
+    let cursor: string | null = null;
+
+    while (!isDone) {
+      const result: { page: any[]; isDone: boolean; continueCursor: string } = await ctx.db
+        .query("issues")
+        .paginate({ numItems: 100, cursor: cursor as any });
+
+      for (const issue of result.page) {
+        allIssues.push(issue);
+      }
+
+      isDone = result.isDone;
+      cursor = result.continueCursor;
+    }
 
     // Simple keyword matching (case-insensitive)
     const keywords = searchQuery.toLowerCase().split(/\s+/);
