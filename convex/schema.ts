@@ -2,6 +2,22 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
+  issueStats: defineTable({
+    total: v.number(),
+    byCategory: v.object({
+      Bug: v.number(),
+      FeatureRequest: v.number(),
+      Question: v.number(),
+      Other: v.number(),
+    }),
+    byConfidence: v.object({
+      High: v.number(),
+      Medium: v.number(),
+      Low: v.number(),
+    }),
+    lastSync: v.optional(v.number()),
+  }),
+
   syncStatus: defineTable({
     isRunning: v.boolean(),
     startedAt: v.optional(v.number()),

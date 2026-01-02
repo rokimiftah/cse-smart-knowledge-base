@@ -24,7 +24,7 @@ export const useIssueSearch = () => {
     setResults([]); // Clear previous results immediately
 
     try {
-      const searchResults = await searchAction({ query, limit: 10 });
+      const searchResults = await searchAction({ query, limit: 21 });
       setResults(searchResults);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to search issues");

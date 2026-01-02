@@ -15,7 +15,9 @@ import type * as actions_syncIssues from "../actions/syncIssues.js";
 import type * as crons from "../crons.js";
 import type * as lib_openai from "../lib/openai.js";
 import type * as mutations_clearIssues from "../mutations/clearIssues.js";
+import type * as mutations_rebuildStats from "../mutations/rebuildStats.js";
 import type * as mutations_saveIssue from "../mutations/saveIssue.js";
+import type * as mutations_updateStats from "../mutations/updateStats.js";
 import type * as mutations_updateSyncStatus from "../mutations/updateSyncStatus.js";
 import type * as queries_getDashboardStats from "../queries/getDashboardStats.js";
 import type * as queries_getIssueByGithubId from "../queries/getIssueByGithubId.js";
@@ -23,6 +25,7 @@ import type * as queries_getIssues from "../queries/getIssues.js";
 import type * as queries_getIssuesWithPagination from "../queries/getIssuesWithPagination.js";
 import type * as queries_getSyncStatus from "../queries/getSyncStatus.js";
 import type * as queries_keywordSearch from "../queries/keywordSearch.js";
+import type * as queries_paginateIssuesLight from "../queries/paginateIssuesLight.js";
 import type * as queries_searchIssues from "../queries/searchIssues.js";
 import type * as queries_vectorSearch from "../queries/vectorSearch.js";
 
@@ -40,7 +43,9 @@ declare const fullApi: ApiFromModules<{
   crons: typeof crons;
   "lib/openai": typeof lib_openai;
   "mutations/clearIssues": typeof mutations_clearIssues;
+  "mutations/rebuildStats": typeof mutations_rebuildStats;
   "mutations/saveIssue": typeof mutations_saveIssue;
+  "mutations/updateStats": typeof mutations_updateStats;
   "mutations/updateSyncStatus": typeof mutations_updateSyncStatus;
   "queries/getDashboardStats": typeof queries_getDashboardStats;
   "queries/getIssueByGithubId": typeof queries_getIssueByGithubId;
@@ -48,6 +53,7 @@ declare const fullApi: ApiFromModules<{
   "queries/getIssuesWithPagination": typeof queries_getIssuesWithPagination;
   "queries/getSyncStatus": typeof queries_getSyncStatus;
   "queries/keywordSearch": typeof queries_keywordSearch;
+  "queries/paginateIssuesLight": typeof queries_paginateIssuesLight;
   "queries/searchIssues": typeof queries_searchIssues;
   "queries/vectorSearch": typeof queries_vectorSearch;
 }>;

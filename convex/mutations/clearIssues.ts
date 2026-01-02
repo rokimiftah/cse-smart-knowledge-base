@@ -12,6 +12,17 @@ export const clearAllIssues = mutation({
       await ctx.db.delete(issue._id);
     }
 
+    // Reset stats
+    const stats = await ctx.db.query("issueStats").first();
+    if (stats) {
+      await ctx.db.patch(stats._id, {
+        total: 0,
+        byCategory: { Bug: 0, FeatureRequest: 0, Question: 0, Other: 0 },
+        byConfidence: { High: 0, Medium: 0, Low: 0 },
+        lastSync: undefined,
+      });
+    }
+
     console.log(`Successfully cleared ${allIssues.length} issues.`);
 
     return {

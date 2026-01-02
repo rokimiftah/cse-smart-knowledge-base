@@ -95,7 +95,7 @@ export const SearchPage = () => {
                 <p className="mb-6 text-center text-sm text-gray-500 lg:mb-8">
                   Found {results.length} relevant {results.length === 1 ? "result" : "results"}
                 </p>
-                <div className="grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+                <div className="mb-1 grid gap-4 sm:grid-cols-2 sm:gap-6 lg:mb-4 lg:grid-cols-3">
                   {results.map((issue) => (
                     <IssueCard key={issue._id} issue={issue} onClick={() => setSelectedIssue(issue)} />
                   ))}
@@ -125,7 +125,7 @@ export const SearchPage = () => {
       )}
 
       {/* Sync button - bottom right corner */}
-      <div className="fixed right-4 bottom-4 z-50 hidden sm:right-6 sm:bottom-6">
+      <div className="fixed right-4 bottom-4 z-50 sm:right-6 sm:bottom-6">
         <SyncButton />
       </div>
 
