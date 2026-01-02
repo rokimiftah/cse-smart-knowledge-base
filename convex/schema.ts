@@ -28,6 +28,18 @@ export default defineSchema({
     message: v.optional(v.string()),
   }),
 
+  syncRawIssues: defineTable({
+    syncId: v.string(),
+    githubId: v.number(),
+    number: v.number(),
+    title: v.string(),
+    body: v.string(),
+    url: v.string(),
+    commentsCount: v.number(),
+    commentsFetched: v.boolean(),
+    comments: v.array(v.string()),
+  }).index("by_sync_id", ["syncId"]),
+
   issues: defineTable({
     githubIssueId: v.number(),
     number: v.number(),
