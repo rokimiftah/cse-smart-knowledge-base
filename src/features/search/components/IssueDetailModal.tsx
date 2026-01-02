@@ -41,7 +41,7 @@ export const IssueDetailModal = ({ issue, onClose }: IssueDetailModalProps) => {
                 <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">{issue.category}</span>
                 <span className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700">#{issue.number}</span>
                 <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">
-                  {issue.confidenceScore} Confidence
+                  {issue.confidenceScore} Solution
                 </span>
               </div>
             </div>

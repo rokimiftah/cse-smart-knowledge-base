@@ -18,7 +18,7 @@ export const SyncButton = () => {
     setMessage("");
 
     try {
-      const result = await triggerSyncAction({ perPage: 30 });
+      const result = await triggerSyncAction({ perPage: 100 });
       setStatus("success");
       setMessage(`Synced ${result.processed} issues`);
 

@@ -111,11 +111,11 @@ Category: ${analysis.category}`;
     });
 
     return {
-      category: analysis.category,
-      summary: analysis.summary,
+      category: analysis.category || "Other",
+      summary: analysis.summary || "No summary available",
       rootCause: analysis.rootCause || null,
-      solution: analysis.solution,
-      confidenceScore: analysis.confidenceScore,
+      solution: analysis.solution || "No solution provided",
+      confidenceScore: analysis.confidenceScore || "Low",
       embedding,
     };
   },

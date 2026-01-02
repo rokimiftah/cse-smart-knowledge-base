@@ -7,14 +7,19 @@ import { v } from "convex/values";
 import { internal } from "../_generated/api";
 import { action } from "../_generated/server";
 
+// Delay to respect Nvidia embedding API rate limit (30 RPM)
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const RATE_LIMIT_DELAY_MS = 2100; // ~28 requests/min to stay under 30 RPM
+
 export const syncIssues = action({
   args: {
     owner: v.string(),
     repo: v.string(),
     perPage: v.optional(v.number()),
+    maxPages: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const { owner, repo, perPage = 30 } = args;
+    const { owner, repo, perPage = 100, maxPages = 30 } = args;
 
     console.log(`[Sync] Starting sync for ${owner}/${repo}`);
 
@@ -22,6 +27,7 @@ export const syncIssues = action({
       owner,
       repo,
       perPage,
+      maxPages,
     });
 
     console.log(`[Sync] Fetched ${issues.length} closed issues`);
@@ -62,6 +68,9 @@ export const syncIssues = action({
 
         processedCount++;
         console.log(`[Sync] Saved issue #${issue.number}`);
+
+        // Rate limit delay for Nvidia embedding API (30 RPM)
+        await delay(RATE_LIMIT_DELAY_MS);
       } catch (error) {
         errorCount++;
         console.error(`[Sync] Error processing issue #${issue.number}:`, error);

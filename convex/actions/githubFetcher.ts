@@ -33,9 +33,10 @@ export const fetchClosedIssues = action({
     owner: v.string(),
     repo: v.string(),
     perPage: v.optional(v.number()),
+    maxPages: v.optional(v.number()),
   },
   handler: async (_ctx, args): Promise<IssueWithComments[]> => {
-    const { owner, repo, perPage = 30 } = args;
+    const { owner, repo, perPage = 100, maxPages = 30 } = args;
     const token = process.env.GITHUB_TOKEN;
 
     if (!token) {
@@ -48,19 +49,42 @@ export const fetchClosedIssues = action({
       "X-GitHub-Api-Version": "2022-11-28",
     };
 
-    const issuesUrl = `https://api.github.com/repos/${owner}/${repo}/issues?state=closed&per_page=${perPage}&sort=updated&direction=desc`;
+    const allIssues: GitHubIssue[] = [];
+    let page = 1;
 
-    const issuesResponse = await fetch(issuesUrl, { headers });
+    // Fetch all pages until no more results or maxPages reached
+    while (page <= maxPages) {
+      const issuesUrl = `https://api.github.com/repos/${owner}/${repo}/issues?state=closed&per_page=${perPage}&page=${page}&sort=updated&direction=desc`;
 
-    if (!issuesResponse.ok) {
-      throw new Error(`GitHub API error: ${issuesResponse.status} ${issuesResponse.statusText}`);
+      console.log(`[GitHub] Fetching page ${page}...`);
+      const issuesResponse = await fetch(issuesUrl, { headers });
+
+      if (!issuesResponse.ok) {
+        throw new Error(`GitHub API error: ${issuesResponse.status} ${issuesResponse.statusText}`);
+      }
+
+      const issues: GitHubIssue[] = await issuesResponse.json();
+
+      if (issues.length === 0) {
+        console.log(`[GitHub] No more issues at page ${page}, stopping.`);
+        break;
+      }
+
+      allIssues.push(...issues);
+      console.log(`[GitHub] Page ${page}: fetched ${issues.length} issues (total: ${allIssues.length})`);
+
+      if (issues.length < perPage) {
+        break;
+      }
+
+      page++;
     }
 
-    const issues: GitHubIssue[] = await issuesResponse.json();
+    console.log(`[GitHub] Total issues fetched: ${allIssues.length}`);
 
     const issuesWithComments: IssueWithComments[] = [];
 
-    for (const issue of issues) {
+    for (const issue of allIssues) {
       if ("pull_request" in issue) continue;
 
       let comments: string[] = [];

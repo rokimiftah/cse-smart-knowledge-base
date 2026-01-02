@@ -14,7 +14,7 @@ const categoryColors = {
   Other: "bg-gray-100 text-gray-700 border-gray-200",
 };
 
-const confidenceColors = {
+const solutionQualityColors = {
   High: "text-green-600",
   Medium: "text-yellow-600",
   Low: "text-red-600",
@@ -47,8 +47,10 @@ export const IssueCard = ({ issue, onClick }: IssueCardProps) => {
           {issue.category}
         </span>
         <span className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs text-gray-600">#{issue.number}</span>
-        <span className={`text-xs font-medium ${confidenceColors[issue.confidenceScore as keyof typeof confidenceColors]}`}>
-          {issue.confidenceScore} Confidence
+        <span
+          className={`text-xs font-medium ${solutionQualityColors[issue.confidenceScore as keyof typeof solutionQualityColors]}`}
+        >
+          {issue.confidenceScore} Solution
         </span>
         {similarityPercentage !== null && (
           <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
