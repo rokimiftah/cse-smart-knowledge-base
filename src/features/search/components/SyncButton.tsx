@@ -63,23 +63,18 @@ export const SyncButton = () => {
         <span className="hidden sm:inline">{getButtonText()}</span>
       </button>
 
-      {syncStatus?.message &&
-        !isSyncing &&
-        !tooltipDismissed &&
-        syncStatus.completedAt &&
-        syncStatus.processed !== undefined &&
-        syncStatus.processed > 0 && (
-          <div className="absolute right-0 bottom-full mb-2 w-56 rounded-lg border-2 border-gray-300 bg-white p-2.5 text-xs shadow-lg sm:w-64 sm:rounded-xl sm:p-3 sm:text-sm">
-            <button
-              type="button"
-              onClick={() => setTooltipDismissed(true)}
-              className="absolute top-1 right-1 cursor-pointer p-0.5 text-gray-400 hover:text-gray-600"
-            >
-              <X size={14} />
-            </button>
-            <div className="pr-4">{syncStatus.message}</div>
-          </div>
-        )}
+      {syncStatus?.message && !isSyncing && !tooltipDismissed && syncStatus.completedAt && (
+        <div className="absolute right-0 bottom-full mb-2 w-56 rounded-lg border-2 border-gray-300 bg-white p-2.5 text-xs shadow-lg sm:w-64 sm:rounded-xl sm:p-3 sm:text-sm">
+          <button
+            type="button"
+            onClick={() => setTooltipDismissed(true)}
+            className="absolute top-1 right-1 cursor-pointer p-0.5 text-gray-400 hover:text-gray-600"
+          >
+            <X size={14} />
+          </button>
+          <div className="pr-4">{syncStatus.message}</div>
+        </div>
+      )}
     </div>
   );
 };
