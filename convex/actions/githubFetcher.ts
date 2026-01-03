@@ -108,8 +108,9 @@ export const fetchPage = action({
     const filteredIssues = issues.filter((issue) => !("pull_request" in issue));
     console.log(`[GitHub] Page ${page}: fetched ${issues.length} issues, ${filteredIssues.length} after PR filter`);
 
+    let newIssuesCount = 0;
     for (const issue of filteredIssues) {
-      await ctx.runMutation((internal as any)["mutations/syncRawIssues"].saveRawIssue, {
+      const isNew = await ctx.runMutation((internal as any)["mutations/syncRawIssues"].saveRawIssueIfNew, {
         syncId,
         githubId: issue.id,
         number: issue.number,
@@ -118,6 +119,23 @@ export const fetchPage = action({
         url: issue.html_url,
         commentsCount: issue.comments,
       });
+      if (isNew) {
+        newIssuesCount++;
+      }
+    }
+
+    console.log(`[GitHub] Page ${page}: ${newIssuesCount} new issues, ${filteredIssues.length - newIssuesCount} already indexed`);
+
+    // Early termination: if no new issues found in this page, stop fetching
+    // (since sorted by updated:desc, older pages won't have new issues either)
+    if (newIssuesCount === 0) {
+      console.log(`[GitHub] No new issues found on page ${page}, stopping fetch (incremental sync complete)`);
+      await ctx.scheduler.runAfter(0, (internal as any)["actions/githubFetcher"].fetchCommentsForBatch, {
+        owner,
+        repo,
+        syncId,
+      });
+      return;
     }
 
     const hasMore = issues.length === ISSUES_PER_PAGE && page < maxPages;

@@ -27,6 +27,42 @@ export const saveRawIssue = mutation({
   },
 });
 
+export const saveRawIssueIfNew = mutation({
+  args: {
+    syncId: v.string(),
+    githubId: v.number(),
+    number: v.number(),
+    title: v.string(),
+    body: v.string(),
+    url: v.string(),
+    commentsCount: v.number(),
+  },
+  handler: async (ctx, args): Promise<boolean> => {
+    const existing = await ctx.db
+      .query("issues")
+      .withIndex("by_github_id", (q) => q.eq("githubIssueId", args.githubId))
+      .first();
+
+    if (existing) {
+      return false;
+    }
+
+    await ctx.db.insert("syncRawIssues", {
+      syncId: args.syncId,
+      githubId: args.githubId,
+      number: args.number,
+      title: args.title,
+      body: args.body,
+      url: args.url,
+      commentsCount: args.commentsCount,
+      commentsFetched: false,
+      comments: [],
+    });
+
+    return true;
+  },
+});
+
 export const updateRawIssueComments = mutation({
   args: {
     syncId: v.string(),

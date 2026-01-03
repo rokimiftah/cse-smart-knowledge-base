@@ -35,54 +35,42 @@ export const syncIssues = action({
   },
 });
 
+interface RawIssue {
+  githubId: number;
+  number: number;
+  title: string;
+  body: string;
+  url: string;
+  comments: string[];
+}
+
 export const processIssuesFromFetch = action({
   args: {
     syncId: v.string(),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<{ total: number; processed: number; errors: number; status?: string }> => {
     const { syncId } = args;
 
-    const rawIssues = await ctx.runQuery((internal as any)["queries/syncRawIssues"].getRawIssuesForSync, { syncId });
+    const rawIssues: RawIssue[] = await ctx.runQuery((internal as any)["queries/syncRawIssues"].getRawIssuesForSync, { syncId });
 
-    console.log(`[Sync] Received ${rawIssues.length} issues from fetch`);
+    console.log(`[Sync] Received ${rawIssues.length} new issues from fetch (already filtered)`);
 
-    const issues: IssueWithComments[] = rawIssues.map((r: any) => ({
-      id: r.githubId,
-      number: r.number,
-      title: r.title,
-      body: r.body,
-      url: r.url,
-      comments: r.comments,
-    }));
-
-    const newIssues: IssueWithComments[] = [];
-    for (const issue of issues) {
-      const existing = await ctx.runQuery((internal as any)["queries/getIssueByGithubId"].getIssueByGithubId, {
-        githubIssueId: issue.id,
-      });
-      if (!existing) {
-        newIssues.push(issue);
-      }
-    }
-
-    console.log(`[Sync] Found ${newIssues.length} new issues to process`);
-
-    if (newIssues.length === 0) {
+    if (rawIssues.length === 0) {
       await ctx.runMutation((internal as any)["mutations/syncRawIssues"].clearRawIssues, { syncId });
       await ctx.runMutation((internal as any)["mutations/updateSyncStatus"].completeSync, {
         processed: 0,
-        total: issues.length,
+        total: 0,
         errors: 0,
-        message: `No new issues to sync (${issues.length} already indexed)`,
+        message: "No new issues to sync",
       });
-      return { total: issues.length, processed: 0, errors: 0 };
+      return { total: 0, processed: 0, errors: 0 };
     }
 
     await ctx.runMutation((internal as any)["mutations/updateSyncStatus"].updateSyncProgress, {
       processed: 0,
-      total: newIssues.length,
+      total: rawIssues.length,
       errors: 0,
-      message: `Processing ${newIssues.length} new issues...`,
+      message: `Processing ${rawIssues.length} new issues...`,
     });
 
     await ctx.scheduler.runAfter(0, (internal as any)["actions/syncIssues"].processBatch, {
@@ -90,11 +78,10 @@ export const processIssuesFromFetch = action({
       startIndex: 0,
       processedCount: 0,
       errorCount: 0,
-      totalNew: newIssues.length,
-      totalAll: issues.length,
+      totalNew: rawIssues.length,
     });
 
-    return { total: issues.length, processed: 0, errors: 0, status: "processing" };
+    return { total: rawIssues.length, processed: 0, errors: 0, status: "processing" };
   },
 });
 
@@ -105,30 +92,21 @@ export const processBatch = action({
     processedCount: v.number(),
     errorCount: v.number(),
     totalNew: v.number(),
-    totalAll: v.number(),
   },
-  handler: async (ctx, args) => {
-    const { syncId, startIndex, totalNew, totalAll } = args;
+  handler: async (ctx, args): Promise<{ processedCount: number; errorCount: number }> => {
+    const { syncId, startIndex, totalNew } = args;
     let { processedCount, errorCount } = args;
 
-    const rawIssues = await ctx.runQuery((internal as any)["queries/syncRawIssues"].getRawIssuesForSync, { syncId });
+    const rawIssues: RawIssue[] = await ctx.runQuery((internal as any)["queries/syncRawIssues"].getRawIssuesForSync, { syncId });
 
-    const allIssues: IssueWithComments[] = [];
-    for (const r of rawIssues) {
-      const existing = await ctx.runQuery((internal as any)["queries/getIssueByGithubId"].getIssueByGithubId, {
-        githubIssueId: r.githubId,
-      });
-      if (!existing) {
-        allIssues.push({
-          id: r.githubId,
-          number: r.number,
-          title: r.title,
-          body: r.body,
-          url: r.url,
-          comments: r.comments,
-        });
-      }
-    }
+    const allIssues: IssueWithComments[] = rawIssues.map((r) => ({
+      id: r.githubId,
+      number: r.number,
+      title: r.title,
+      body: r.body,
+      url: r.url,
+      comments: r.comments,
+    }));
 
     const endIndex = Math.min(startIndex + BATCH_SIZE, allIssues.length);
     const batch = allIssues.slice(startIndex, endIndex);
@@ -180,7 +158,6 @@ export const processBatch = action({
         processedCount,
         errorCount,
         totalNew,
-        totalAll,
       });
     } else {
       console.log(`[Sync] Completed: ${processedCount} processed, ${errorCount} errors`);

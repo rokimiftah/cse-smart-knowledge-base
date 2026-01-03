@@ -73,7 +73,7 @@ export const SyncButton = () => {
             <button
               type="button"
               onClick={() => setTooltipDismissed(true)}
-              className="absolute top-1 right-1 p-0.5 text-gray-400 hover:text-gray-600"
+              className="absolute top-1 right-1 cursor-pointer p-0.5 text-gray-400 hover:text-gray-600"
             >
               <X size={14} />
             </button>
