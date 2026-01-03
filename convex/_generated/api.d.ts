@@ -17,6 +17,7 @@ import type * as lib_openai from "../lib/openai.js";
 import type * as mutations_clearIssues from "../mutations/clearIssues.js";
 import type * as mutations_rebuildStats from "../mutations/rebuildStats.js";
 import type * as mutations_saveIssue from "../mutations/saveIssue.js";
+import type * as mutations_syncRawIssues from "../mutations/syncRawIssues.js";
 import type * as mutations_updateStats from "../mutations/updateStats.js";
 import type * as mutations_updateSyncStatus from "../mutations/updateSyncStatus.js";
 import type * as queries_getDashboardStats from "../queries/getDashboardStats.js";
@@ -27,6 +28,7 @@ import type * as queries_getSyncStatus from "../queries/getSyncStatus.js";
 import type * as queries_keywordSearch from "../queries/keywordSearch.js";
 import type * as queries_paginateIssuesLight from "../queries/paginateIssuesLight.js";
 import type * as queries_searchIssues from "../queries/searchIssues.js";
+import type * as queries_syncRawIssues from "../queries/syncRawIssues.js";
 import type * as queries_vectorSearch from "../queries/vectorSearch.js";
 
 import type {
@@ -45,6 +47,7 @@ declare const fullApi: ApiFromModules<{
   "mutations/clearIssues": typeof mutations_clearIssues;
   "mutations/rebuildStats": typeof mutations_rebuildStats;
   "mutations/saveIssue": typeof mutations_saveIssue;
+  "mutations/syncRawIssues": typeof mutations_syncRawIssues;
   "mutations/updateStats": typeof mutations_updateStats;
   "mutations/updateSyncStatus": typeof mutations_updateSyncStatus;
   "queries/getDashboardStats": typeof queries_getDashboardStats;
@@ -55,6 +58,7 @@ declare const fullApi: ApiFromModules<{
   "queries/keywordSearch": typeof queries_keywordSearch;
   "queries/paginateIssuesLight": typeof queries_paginateIssuesLight;
   "queries/searchIssues": typeof queries_searchIssues;
+  "queries/syncRawIssues": typeof queries_syncRawIssues;
   "queries/vectorSearch": typeof queries_vectorSearch;
 }>;
 
