@@ -61,8 +61,8 @@ export const getEmbedding = async (text: string, inputType: "query" | "passage" 
 
   // Truncate text to stay under Nvidia's 8192 token limit
   // Using ~3 chars per token to be safe (some chars = multiple tokens)
-  const MAX_CHARS = 24000;
-  const truncatedText = text.length > MAX_CHARS ? text.substring(0, MAX_CHARS) + "..." : text;
+  const MAX_CHARS = 64000;
+  const truncatedText = text.length > MAX_CHARS ? `${text.substring(0, MAX_CHARS)}...` : text;
 
   console.log("Embedding API Request:", {
     url: `${apiUrl}/embeddings`,
@@ -86,6 +86,11 @@ export const getEmbedding = async (text: string, inputType: "query" | "passage" 
   // Nvidia uses: "query" for search queries, "passage" for documents
   // OpenAI may use different parameter names
   requestBody.input_type = inputType;
+
+  // Use server-side truncation for Nvidia API to handle token limit
+  if (apiUrl.includes("nvidia")) {
+    requestBody.truncate = "END";
+  }
 
   const response = await fetch(`${apiUrl}/embeddings`, {
     method: "POST",
