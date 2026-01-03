@@ -1,11 +1,21 @@
+import { useEffect, useState } from "react";
+
 import { useAction, useQuery } from "convex/react";
-import { AlertCircle, CheckCircle, Loader2, RefreshCw } from "lucide-react";
+import { AlertCircle, CheckCircle, Loader2, RefreshCw, X } from "lucide-react";
 
 import { api } from "../../../../convex/_generated/api";
 
 export const SyncButton = () => {
   const syncStatus = useQuery((api as any)["queries/getSyncStatus"].getSyncStatus);
   const triggerSyncAction = useAction((api as any)["actions/manualSync"].triggerSync);
+  const [tooltipDismissed, setTooltipDismissed] = useState(false);
+
+  // Reset dismissed state when a new sync starts
+  useEffect(() => {
+    if (syncStatus?.isRunning) {
+      setTooltipDismissed(false);
+    }
+  }, [syncStatus?.isRunning]);
 
   const isLoading = syncStatus === undefined;
   const isSyncing = syncStatus?.isRunning === true;
@@ -55,11 +65,19 @@ export const SyncButton = () => {
 
       {syncStatus?.message &&
         !isSyncing &&
+        !tooltipDismissed &&
         syncStatus.completedAt &&
         syncStatus.processed !== undefined &&
         syncStatus.processed > 0 && (
           <div className="absolute right-0 bottom-full mb-2 w-56 rounded-lg border-2 border-gray-300 bg-white p-2.5 text-xs shadow-lg sm:w-64 sm:rounded-xl sm:p-3 sm:text-sm">
-            {syncStatus.message}
+            <button
+              type="button"
+              onClick={() => setTooltipDismissed(true)}
+              className="absolute top-1 right-1 p-0.5 text-gray-400 hover:text-gray-600"
+            >
+              <X size={14} />
+            </button>
+            <div className="pr-4">{syncStatus.message}</div>
           </div>
         )}
     </div>
